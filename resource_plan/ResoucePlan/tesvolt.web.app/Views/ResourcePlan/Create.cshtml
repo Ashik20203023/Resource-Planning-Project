@@ -1,0 +1,336 @@
+﻿@model tesvolt.dbmodels.app.ResourcePlanModelForFormSubmit
+
+@{
+    ViewData["Title"] = "Create";
+    var baseurl = ViewBag.BaseUrl;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="float-start">
+                    <strong>ResourcePlan Create</strong>
+                </div>
+                <div class="float-end">
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="ResourceNameId" class="control-label"></label>
+                        <select asp-for="ResourceNameId" class="form-control" asp-items="ViewBag.ResourceNameId"></select>
+                        <span asp-validation-for="ResourceNameId" class="text-danger"></span>
+                    </div>
+                    @* <div class="form-group">
+                        <label class="control-label">Select Month(s):</label>
+                        <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ced4da; padding: 10px;">
+                            @for (int month = 1; month <= 12; month++)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedMonths" id="month_@month" value="@month">
+                                    <label class="form-check-label" for="month_@month">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</label>
+                                </div>
+                            }
+                        </div>
+                    </div> *@
+
+                   @*  <div class="form-group">
+                        <label for="yearDropdown">Select Year:</label>
+                        <select asp-for="Year" id="yearDropdown" class="form-control">
+                            <!-- Year options will be added by JavaScript -->
+                        </select>
+                    </div> *@
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ProjectNameId" class="control-label"></label>
+                                <select asp-for="ProjectNameId" class="form-control" asp-items="ViewBag.ProjectNameId"></select>
+                                <span asp-validation-for="ProjectNameId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ModuleNameId" class="control-label"></label>
+                            <select asp-for="ModuleNameId" class="form-control" asp-items=" ViewBag.ModuleNameId" ></select>
+                            <span asp-validation-for="ModuleNameId" class="text-danger"></span>
+                        </div>
+                        
+                    </div>
+
+                    <div class="table-responsive vacationTable">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Vacation Start</th>
+                                <th>Vacation End</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Data will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label">Work Start Date for Module</label>
+                        <input id="WorkStartDateForModule" class="form-control" readonly disabled />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label">Work Start Date for Module</label>
+                        <input id="WorkEndDateForModule" class="form-control" readonly disabled />
+                    </div>
+
+
+                    <div class="form-group float-end">
+                        <button id="btnCheckAvailability" type="button" class="btn btn-primary rounded-pill"><span class="cil-contrast"></span> Check Availability </button>
+                        &nbsp;&nbsp;
+                        <button id="btnSubmit" type="submit" class="btn btn-success rounded-pill"><span class="cil-contrast"></span> Create </button>
+                    </div>
+                    
+                    <div style="width: 70%;margin: 0px auto;margin-top: 50px;margin-bottom: 20px">
+                        <div id="divAvailabilityMessage"></div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        const vacationTableBody = document.querySelector('.vacationTable table tbody');
+        
+        /*
+        const yearDropdown = document.getElementById('yearDropdown');
+        const resourceNameDropdown = document.querySelector('select[name="ResourceNameId"]');
+        const projectTableBody = document.querySelector('.projectTable table tbody');
+        const hiddenSelectedMonths = document.createElement('input');
+        hiddenSelectedMonths.setAttribute('type', 'hidden');
+        hiddenSelectedMonths.setAttribute('name', 'selectedMonths');
+        document.querySelector('form').appendChild(hiddenSelectedMonths); // Append hidden input to form
+
+        // Populate the year dropdown
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i <= 5; i++) {
+            const year = currentYear + i;
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearDropdown.appendChild(option);
+        }
+        */
+
+        async function fetchVacationData(resourceNameId) {
+            try {
+                const response = await fetch(`/ResourcePlan/GetVacationData?resourceNameId=${resourceNameId}`);
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched vacation data:', data);  // Debugging output
+
+                updateVacationTable(data.data);
+            } catch (error) {
+                console.error('Fetch vacation data error:', error);
+            }
+        }
+
+        async function fetchModuleData(moduleNameId) {
+            try {
+                const response = await fetch(`/ResourcePlan/GetModuleData?moduleNameId=${moduleNameId}`);
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched module data:', data);  // Debugging output
+                
+                if (data != null && data != "") {
+                    var tmp1 = data['data']['workStartDate'];
+                    if (tmp1 != null && tmp1 != "") {
+                        tmp1 = tmp1.split('T')[0];
+                    } else {
+                        tmp1 = "";
+                    }
+                    $("#WorkStartDateForModule").val(tmp1);
+                    
+                    var tmp2 = data['data']['workEndDate'];
+                    if (tmp2 != null && tmp2 != "") {
+                        tmp2 = tmp2.split('T')[0];
+                    } else {
+                        tmp2 = "";
+                    }
+                    $("#WorkEndDateForModule").val(tmp1);
+                }
+
+            } catch (error) {
+                console.error('Fetch vacation data error:', error);
+            }
+        }
+
+        async function fetchProjectData(months, year, resourceNameId) {
+            try {
+                const response = await fetch(`/ResourcePlan/GetProjectData?months=${months}&year=${year}&resourceNameId=${resourceNameId}`);
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched project data:', data);  // Debugging output
+
+                updateProjectTable(data.data);
+            } catch (error) {
+                console.error('Fetch project data error:', error);
+            }
+        }
+
+        function updateProjectTable(data) {
+            projectTableBody.innerHTML = ''; // Clear existing data
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.projectName.name}</td>
+                    <td>${item.percentage}</td>
+                `;
+                projectTableBody.appendChild(row);
+            });
+        }
+
+        function updateVacationTable(data) {
+            vacationTableBody.innerHTML = ''; // Clear existing data
+            let monthSummary = {};
+
+            // Group vacation plans by month
+            data.forEach(item => {
+                if (!monthSummary[item.month]) {
+                    monthSummary[item.month] = [];
+                }
+                monthSummary[item.month].push(item);
+            });
+
+            // Display grouped data in the table
+            for (const [month, plans] of Object.entries(monthSummary)) {
+                plans.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.vacationStart}</td>
+                        <td>${item.vacationEnd}</td>
+                    `;
+                    vacationTableBody.appendChild(row);
+                });
+            }
+        }
+
+        function handleSelectionChange() {
+            const selectedMonths = Array.from(document.querySelectorAll('input[name="selectedMonths"]:checked')).map(input => input.value);
+            const year = yearDropdown.value;
+            const resourceNameId = resourceNameDropdown.value;
+
+            hiddenSelectedMonths.value = selectedMonths.join(','); // Update hidden input with selected months
+
+            if (selectedMonths.length && year && resourceNameId) {
+                const monthsString = selectedMonths.join(',');
+                fetchVacationData(monthsString, year, resourceNameId);
+                fetchProjectData(monthsString, year, resourceNameId);
+            }
+        }
+
+        /*
+        document.querySelectorAll('input[name="selectedMonths"]').forEach(checkbox => {
+            checkbox.addEventListener('change', handleSelectionChange);
+        });
+        yearDropdown.addEventListener('change', handleSelectionChange);
+        resourceNameDropdown.addEventListener('change', handleSelectionChange);
+
+        // Initial load if values are already selected
+        handleSelectionChange();
+        */
+        
+        $("#ProjectNameId").change(function () {
+            handleChangeForProjectDropdown();
+        });
+        
+        $("#ResourceNameId").change(function () {
+            fetchVacationData($("#ResourceNameId").val());
+        });
+        
+        $("#ModuleNameId").change(function () {
+            fetchModuleData($("#ModuleNameId").val());
+        });
+        
+        $("#btnSubmit").click(function (e) {
+            e.preventDefault();
+            var dataToSubmit = {
+                "ProjectNameId": parseInt( $("#ProjectNameId").val() ),
+                "ModuleNameId": parseInt( $("#ModuleNameId").val() ),
+                "ResourceNameId": parseInt( $("#ResourceNameId").val() ),
+            };
+            var url = "@baseurl";
+            jQuery.post(url + "ResourcePlan/ValidateSave", dataToSubmit, function (data) {
+                console.log(data);
+                var availabilityContent = "";
+                if (data != null && data['isAvailable'] == true) {
+                    jQuery.post(url + "ResourcePlan/Save", dataToSubmit, function (_data) {
+                        console.log(_data);
+                        if (_data != null && _data != "" && _data['saveSuccessful'] == true) {
+                            alert("Data saved successfully!");
+                            var href = window.location.href;
+                            window.location.replace(href.replace("Create", "Index"));
+                        }
+                        else {
+                            alert("Save operation failed. Please try again.");
+                        }
+                    });
+                }
+                else {
+                    availabilityContent = "<div style='color:#ffffff;background-color:#ff0000;padding:10px;font-size: 1.35em;border-radius: 10px;text-align:center;'>Employee is NOT available to work. He is on vacation</div>";
+                    $("#divAvailabilityMessage").html(availabilityContent);
+                }
+                
+            });
+        });
+        
+        $("#btnCheckAvailability").click(function (e) {
+            e.preventDefault();
+            var dataToSubmit = {
+                "ProjectNameId": parseInt( $("#ProjectNameId").val() ),
+                "ModuleNameId": parseInt( $("#ModuleNameId").val() ),
+                "ResourceNameId": parseInt( $("#ResourceNameId").val() ),
+            };
+            var url = "@baseurl";
+            jQuery.post(url + "ResourcePlan/ValidateSave", dataToSubmit, function (data) {
+                console.log(data);
+                var availabilityContent = "";
+                if (data != null && data['isAvailable'] == true) {
+                    availabilityContent = "<div style='color:#000000;background-color:#00ff00;padding:10px;font-size: 1.35em;border-radius: 10px;text-align:center;'>Employee is available to work for this module</div>";
+                }
+                else {
+                    availabilityContent = "<div style='color:#ffffff;background-color:#ff0000;padding:10px;font-size: 1.35em;border-radius: 10px;text-align:center;'>Employee is NOT available to work. He is on vacation</div>";
+                }
+                $("#divAvailabilityMessage").html(availabilityContent);
+            });        
+        });
+        
+        jQuery(document).ready(function () {
+            handleChangeForProjectDropdown();
+            fetchVacationData($("#ResourceNameId").val());
+            fetchModuleData($("#ModuleNameId").val());
+        });
+        
+        function handleChangeForProjectDropdown() {
+            var value = $("#ProjectNameId").val();
+            var url = "@baseurl";
+            jQuery.post(url + "ResourcePlan/GetModulesByProjectId", { projectId: value }, function (data) {
+                PopulateModuleDropDown("#ModuleNameId", data);
+            });
+        }
+        function PopulateModuleDropDown(dropDownId, list, selectedId) {
+            $(dropDownId).empty();
+            $.each(list, function (index, row) {
+                $(dropDownId).append("<option value='" + row.id + "'>" + row.modules + "</option>")
+            });
+        }
+    });
+
+</script>

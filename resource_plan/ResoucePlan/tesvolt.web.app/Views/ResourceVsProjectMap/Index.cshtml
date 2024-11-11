@@ -1,0 +1,273 @@
+﻿@{
+    ViewData["Title"] = "Resource vs Project";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        .error {
+            color: red;
+        }
+
+        .ui-datepicker-calendar {
+            display: none; /* Hide the calendar */
+        }
+
+        #excelTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            #excelTable th, #excelTable td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            #excelTable th {
+                background-color: #f2f2f2;
+            }
+
+        #excelForm {
+            display: none;
+        }
+
+            #excelForm .card-body {
+                max-height: 400px; /* Set a maximum height */
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <strong>Project Create</strong>
+            </div>
+            <div class="card-body">
+                <form id="myForm">
+                    <div class="form-group mb-3">
+                        <label for="StartDate" class="control-label">Start Date</label>
+                        <input name="startDate" id="StartDate" class="form-control" type="text" placeholder="Select Month and Year">
+                        <span id="StartDateError" class="text-danger error"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="EndDate" class="control-label">End Date</label>
+                        <input name="endDate" id="EndDate" class="form-control" type="text" placeholder="Select Month and Year">
+                        <span id="EndDateError" class="text-danger error"></span>
+                    </div>
+
+                    <div class="form-group float-end">
+                        <button type="button" id="generateButton" class="btn btn-success rounded-pill">Generate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mb-4" id="excelForm">
+            <div class="card-body">
+                <table id="excelTable">
+                    <thead>
+                        <tr id="tableHeader">
+                            <th>Resource</th>
+                            <th>Project</th>
+                            <!-- Columns for months will be inserted here -->
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+
+                <div id="noDataMessage" class="text-danger" style="display:none;"></div>
+            </div>
+            <div class="form-group float-end">
+                <button type="button" id="downloadButton" class="btn btn-primary rounded-pill">Download as Excel</button>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    
+
+    <script>
+        $(document).ready(function () {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const currentYear = new Date().getFullYear();
+            const yearRange = `${currentYear}:${currentYear + 5}`;
+
+            function formatDatePicker(dateText, inputElement) {
+                const month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                const year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                if (month && year) {
+                    $(inputElement).val(`${year}-${parseInt(month) + 1}`);
+                }
+            }
+
+            $("#StartDate").datepicker({
+                dateFormat: "yy-mm",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: yearRange,
+                showButtonPanel: true,
+                onClose: function (dateText) {
+                    formatDatePicker(dateText, this);
+                }
+            });
+
+            $("#EndDate").datepicker({
+                dateFormat: "yy-mm",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: yearRange,
+                showButtonPanel: true,
+                onClose: function (dateText) {
+                    formatDatePicker(dateText, this);
+                }
+            });
+
+            $("#generateButton").on('click', function () {
+                const startDate = $("#StartDate").val();
+                const endDate = $("#EndDate").val();
+
+                if (startDate && endDate) {
+                    const [startYear, startMonth] = startDate.split('-').map(Number);
+                    const [endYear, endMonth] = endDate.split('-').map(Number);
+
+                    let months = [];
+                    for (let year = startYear; year <= endYear; year++) {
+                        const monthStart = (year === startYear) ? startMonth : 1;
+                        const monthEnd = (year === endYear) ? endMonth : 12;
+
+                        for (let month = monthStart; month <= monthEnd; month++) {
+                            months.push({ year, month, name: `${monthNames[month - 1]} ${year}` });
+                        }
+                    }
+
+                    const monthHeaders = months.map(month => `<th>${month.name}</th>`).join('');
+                    $("#excelTable thead tr").html(`<th>Resources</th><th>Projects</th>${monthHeaders}`);  // Resources before Projects
+
+                    $.getJSON('/ProjectVsResourceMap/GetProjectsAndResources', function (response) {
+                        if (response && response.length) {
+                            const monthMap = months.reduce((acc, month, index) => {
+                                acc[`${month.year}-${month.month < 10 ? '0' : ''}${month.month}`] = index;
+                                return acc;
+                            }, {});
+
+                            const tableRows = response.reduce((rows, item) => {
+                                const monthCells = months.map(month => {
+                                    const key = `${month.year}-${month.month < 10 ? '0' : ''}${month.month}`;
+                                    return item.month === month.month && item.year === month.year ?
+                                        `<td>${item.percentage}%</td>` : '<td></td>';
+                                }).join('');
+
+                                const row = `<tr><td>${item.resourceName}</td><td>${item.projectName}</td>${monthCells}</tr>`;  // Resource before Project
+                                rows.push(row);
+                                return rows;
+                            }, []);
+
+                            $("#tableBody").html(tableRows.join(''));
+                            $("#excelForm").show();
+                        } else {
+                            $("#tableBody").html('<tr><td colspan="16" class="text-danger">No data found.</td></tr>');
+                            $("#excelForm").show();
+                        }
+                    });
+                } else {
+                    $("#tableBody").html('<tr><td colspan="16" class="text-danger">Please select both Start Date and End Date.</td></tr>');
+                    $("#excelForm").show();
+                }
+            });
+
+            $("#myForm").on('submit', function (event) {
+                let isValid = true;
+
+                if ($("#StartDate").val() === "") {
+                    $("#StartDateError").text("Start Date is required.");
+                    isValid = false;
+                } else {
+                    $("#StartDateError").text("");
+                }
+
+                if ($("#EndDate").val() === "") {
+                    $("#EndDateError").text("End Date is required.");
+                    isValid = false;
+                } else {
+                    $("#EndDateError").text("");
+                }
+
+                if (isValid) {
+                    const [startYear, startMonth] = $("#StartDate").val().split('-').map(Number);
+                    const [endYear, endMonth] = $("#EndDate").val().split('-').map(Number);
+
+                    if (startYear > endYear || (startYear === endYear && startMonth > endMonth)) {
+                        $("#EndDateError").text("End Date must be after Start Date.");
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+
+            $("#downloadButton").on('click', function () {
+                const table = document.getElementById('excelTable');
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+                const ws = wb.Sheets["Sheet1"];
+
+                const range = XLSX.utils.decode_range(ws['!ref']);
+
+                // Adjust the formatting for percentage columns
+                for (let row = range.s.r + 1; row <= range.e.r; row++) {
+                    for (let col = 2; col <= range.e.c; col++) { // Start from column 2 for percentage
+                        const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
+                        const cell = ws[cellRef];
+
+                        if (cell && cell.v) {
+                            const percentageValue = parseFloat(cell.v);
+                            cell.v = percentageValue;
+                            cell.t = 'n';
+                            cell.z = '0.00%'; // Format as percentage
+                        }
+                    }
+                }
+
+                // Create a custom header for the Excel file if needed
+                const headers = [];
+                $("#excelTable thead th").each(function () {
+                    headers.push($(this).text());
+                });
+
+                // Add headers to the first row of the worksheet
+                const headerRow = headers.map(header => ({ v: header }));
+                XLSX.utils.sheet_add_json(ws, [headerRow], { skipHeader: true, origin: 'A1' });
+
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+
+                function s2ab(s) {
+                    const buf = new ArrayBuffer(s.length);
+                    const view = new Uint8Array(buf);
+                    for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                    return buf;
+                }
+
+                saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'projects_resources.xlsx');
+            });
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+﻿@model tesvolt.dbmodels.app.VacationPlanModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="float-start">
+                    <strong>Vacation Plan</strong>
+                </div>
+                <div class="float-end">
+                    <a asp-action="Edit" class="btn btn-dark btnbg-primary" asp-route-id="@Model?.Id">Edit</a>
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.ResourceModel)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ResourceModel.Name) <!-- This should work if the ResourceModel is included -->
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.StartDate)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StartDate)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.EndDate)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.EndDate)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.NoOfDay)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.NoOfDay)
+                    </dd>
+                </dl>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.AttendanceEntryModel
+
+@{
+    ViewData["Title"] = "Edit Attendance";
+}
+
+<!-- Include jQuery and jQuery UI -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>Edit Attendance Details</strong>
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="StartDate" class="form-label"></label>
+                        <input asp-for="StartDate" class="form-control" id="StartDate" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="EndDate" class="form-label"></label>
+                        <input asp-for="EndDate" class="form-control" id="EndDate" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="TaskType" class="form-label">Project Status</label>
+                        <div class="d-flex">
+                            @foreach (var enumValue in Enum.GetValues(typeof(TaskType)).Cast<TaskType>())
+                            {
+                                <div class="form-check me-3">
+                                    <input asp-for="TaskType" type="radio" class="form-check-input"
+                                           value="@enumValue.ToString()" id="status_@enumValue" />
+                                    <label class="form-check-label" for="status_@enumValue">
+                                        @enumValue.ToString().Replace('_', ' ') <!-- Display enum value with space instead of underscores -->
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="TaskType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group text-end">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        // Initialize datepicker
+        $("#StartDate, #EndDate").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+    });
+</script>

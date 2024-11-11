@@ -1,0 +1,73 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.ModuleModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit Module Plan</title>
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <div class="float-start">
+                        <strong>Edit Module Plan</strong>
+                    </div>
+                    <div class="float-end">
+                        <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-group">
+                            <label asp-for="Modules" class="control-label"></label>
+                            <input asp-for="Modules" class="form-control" />
+                            <span asp-validation-for="Modules" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NameId" class="control-label"></label>
+                            <select asp-for="NameId" class="form-control" asp-items="ViewBag.NameId"></select>
+                            <span asp-validation-for="NameId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="WorkStartDate" class="control-label"></label>
+                            <input asp-for="WorkStartDate" class="form-control" />
+                            <span asp-validation-for="WorkStartDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="WorkEndDate" class="control-label"></label>
+                            <input asp-for="WorkEndDate" class="form-control" />
+                            <span asp-validation-for="WorkEndDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NoOfDaysNeeded" class="control-label"></label>
+                            <input asp-for="NoOfDaysNeeded" class="form-control" />
+                            <span asp-validation-for="NoOfDaysNeeded" class="text-danger"></span>
+                        </div>
+                        
+
+                        <div class="form-group text-end">
+                            <button type="submit" class="btn btn-success rounded-pill">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

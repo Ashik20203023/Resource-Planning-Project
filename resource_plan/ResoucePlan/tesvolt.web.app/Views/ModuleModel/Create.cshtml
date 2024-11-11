@@ -1,0 +1,124 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.ModuleModel
+
+@{
+    ViewData["Title"] = "Create Module";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create Modules</title>
+
+    <!-- Include jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <div class="float-start">
+                        <strong>Creat Modules Plan</strong>
+                    </div>
+                    <div class="float-end">
+                        <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="NameId" class="control-label">Project Name</label>
+                            <select asp-for="NameId" class="form-control" asp-items="ViewBag.NameId">
+                                <option value="">-- Select Project --</option>
+                            </select>
+                        </div>
+
+                        <!-- Module Information -->
+                        <h4>Module Information</h4>
+                        <div id="module-entries">
+                            <div class="module-entry">
+                                <div class="form-group">
+                                    <label asp-for="Modules" class="control-label">Module Name</label>
+                                    <input asp-for="Modules" class="form-control module-input" placeholder="Enter module name" required />
+                                    <span asp-validation-for="Modules" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="WorkStartDate" class="control-label">Work Start Date</label>
+                                    <input asp-for="WorkStartDate" class="form-control workstartdate-input" type="date" required />
+                                    <span asp-validation-for="WorkStartDate" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="WorkEndDate" class="control-label">Work End Date</label>
+                                    <input asp-for="WorkEndDate" class="form-control workenddate-input" type="date" required />
+                                    <span asp-validation-for="WorkEndDate" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="NoOfDaysNeeded" class="control-label">Number of Days Needed</label>
+                                    <input asp-for="NoOfDaysNeeded" class="form-control noofdaysneeded-input" readonly placeholder="Will be calculated automatically" />
+                                    <span asp-validation-for="NoOfDaysNeeded" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            <script type="text/javascript" >
+
+
+
+                                function calculateNoOfDaysNeeded(startDate, endDate) {
+                                    const start = new Date(startDate);
+                                    const end = new Date(endDate);
+                                    if (!isNaN(start) && !isNaN(end) && start <= end) {
+                                        const timeDiff = end - start;
+                                        return Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert to days
+                                    }
+                                    return 0; // Invalid dates
+                                }
+
+                            function updateDaysInput(entry) {
+                                const startDateInput = document.getElementById("WorkStartDate");
+                                const endDateInput = document.getElementById("WorkEndDate");
+                                const noOfDaysInput = document.getElementById("NoOfDaysNeeded");
+
+                                startDateInput.addEventListener("change", function () {
+                                    const daysNeeded = calculateNoOfDaysNeeded(startDateInput.value, endDateInput.value);
+                                    noOfDaysInput.value = (daysNeeded >= 0 ? daysNeeded : 0) + "";
+                                });
+
+                                endDateInput.addEventListener("change", function () {
+                                    const daysNeeded = calculateNoOfDaysNeeded(startDateInput.value, endDateInput.value);
+                                    noOfDaysInput.value = (daysNeeded >= 0 ? daysNeeded : 0) + "";
+                                });
+                            }
+
+                            /*
+                            document.getElementById("add-module").addEventListener("click", function () {
+                                const newModuleEntry = document.querySelector(".module-entry").cloneNode(true);
+                                newModuleEntry.querySelectorAll("input").forEach(input => input.value = ""); // Clear inputs
+                                document.getElementById("module-entries").appendChild(newModuleEntry);
+                                updateDaysInput(newModuleEntry); // Attach events to new entry
+                            });
+
+                            // Attach initial event listeners
+                            document.querySelectorAll(".module-entry").forEach(entry => updateDaysInput(entry));
+                            */
+
+                            updateDaysInput();
+                        </script>
+                        <div class="form-group text-end">
+                            <button type="submit" class="btn btn-success rounded-pill">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

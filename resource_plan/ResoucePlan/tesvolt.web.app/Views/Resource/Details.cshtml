@@ -1,0 +1,58 @@
+﻿@model tesvolt.dbmodels.app.ResourceModel
+
+@{
+    ViewData["Title"] = "Resource Details";
+}
+
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>Resource Information</strong>
+                    <div>
+                        <a asp-action="Edit" class="btn btn-dark btnbg-primary" asp-route-id="@Model?.Id">Edit</a>
+                        <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <dl class="row mb-3">
+                    <!-- Name -->
+                    <dt class="col-sm-3 fw-bold">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+
+                    <!-- Category -->
+                    <dt class="col-sm-3 fw-bold">
+                        @Html.DisplayNameFor(model => model.Category)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Category)
+                    </dd>
+
+                    <!-- Role -->
+                    <dt class="col-sm-3 fw-bold">
+                        @Html.DisplayNameFor(model => model.Role)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Role)
+                    </dd>
+
+                    <!-- Skills -->
+                    <dt class="col-sm-3 fw-bold">
+                        @Html.DisplayNameFor(model => model.Skills)
+                    </dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.Skills)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.ResourceModel
+
+@{
+    ViewData["Title"] = "Edit Resource";
+}
+
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>Edit Resource Information</strong>
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- Name Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Category Field (Enum as Radio Buttons) -->
+                    @* <div class="form-group mb-3">
+                        <label asp-for="Category" class="control-label"></label>
+                        <div class="form-group">
+                            <label asp-for="ResourceNameId" class="control-label"></label>
+                            <select asp-for="ResourceNameId" class="form-control" asp-items="ViewBag.ResourceNameId"></select>
+                            <span asp-validation-for="ResourceNameId" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="ProjectNameId" class="control-label"></label>
+                                    <select asp-for="ProjectNameId" class="form-control" asp-items="ViewBag.ProjectNameId"></select>
+                                    <span asp-validation-for="ProjectNameId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ModuleNameId" class="control-label"></label>
+                                <select asp-for="ModuleNameId" class="form-control" asp-items=" ViewBag.ModuleNameId"></select>
+                                <span asp-validation-for="ModuleNameId" class="text-danger"></span>
+                            </div>
+
+                        </div> *@
+
+                        <div class="table-responsive vacationTable">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Vacation Start</th>
+                                        <th>Vacation End</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be inserted here by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Work Start Date for Module</label>
+                            <input id="WorkStartDateForModule" class="form-control" readonly disabled />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Work Start Date for Module</label>
+                            <input id="WorkEndDateForModule" class="form-control" readonly disabled />
+                        </div>
+
+
+                    <!-- Role Field (Enum as Radio Buttons) -->
+                    
+
+                    
+
+                    <!-- Update Button -->
+                    <div class="form-group text-end">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<!--
+* CoreUI - Free Bootstrap Admin Template
+* version v5.0.0
+* link https://coreui.io/product/free-bootstrap-admin-template/
+* Copyright (c) 2024 creativeLabs Łukasz Holeczek
+* Licensed under MIT (https://github.com/coreui/coreui-free-bootstrap-admin-template/blob/main/LICENSE)
+-->
+<html lang="en">
+<head>
+    <base href="./">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Vendors styles-->
+    <link rel="stylesheet" href="~/simplebar/css/simplebar.css">
+    <!-- Main styles for this application-->
+    <link href="~/Content/coreui-style.css" rel="stylesheet">
+    <!-- We use those styles to show code examples, you should remove them in your application.-->
+    <link href="~/Content/examples.css" rel="stylesheet">
+    <!-- We use those styles to style Carbon ads and CoreUI PRO banner, you should remove them in your application.-->
+    <link href="~/Content/ads.css" rel="stylesheet">
+    <script src="~/Scripts/config.js"></script>
+    <script src="~/Scripts/color-modes.js"></script>
+</head>
+<body>
+    <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
+        <div class="sidebar-header border-bottom">
+            <div class="sidebar-brand">
+                
+            </div>
+            <button class="btn-close d-lg-none" type="button" data-coreui-dismiss="offcanvas" data-coreui-theme="dark" aria-label="Close" onclick="coreui.Sidebar.getInstance(document.querySelector(&quot;#sidebar&quot;)).toggle()"></button>
+        </div>
+        <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
+            <li class="nav-item">
+                <a class="nav-link" href="~/">
+                    <svg class="nav-icon">
+                        <use xlink:href="/coreui/icons/svg/free.svg#cil-home"></use>
+                    </svg> Dashboard
+                </a>
+                
+            </li>
+            <li class="nav-group">
+                <a class="nav-link nav-group-toggle" href="#">
+                    <svg class="nav-icon">
+                        <use xlink:href="/coreui/icons/svg/free.svg#cil-settings"></use>
+                    </svg> Settings
+                </a>
+                <ul class="nav-group-items compact">
+                    <li class="nav-item"><a class="nav-link" href="~/Project/Index"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="~/Resource/Index"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Resource</a></li>
+                    <li class="nav-item"><a class="nav-link" href="~/ModuleModel/Index"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Modules</a></li>
+                </ul>
+            </li>
+            <li class="nav-group">
+                <a class="nav-link nav-group-toggle" href="#">
+                    <svg class="nav-icon">
+                        <use xlink:href="/coreui/icons/svg/free.svg#cil-spreadsheet"></use>
+                    </svg> Planing
+                </a>
+                <ul class="nav-group-items compact">
+                    <li class="nav-item"><a class="nav-link" href="~/ResourcePlan/Index"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Resource plan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="~/VacationPlan/Index"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Vacation plan</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="~/attendanceentry/index">
+                    <svg class="nav-icon">
+                        <use xlink:href="/coreui/icons/svg/free.svg#cil-check-circle"></use>
+                    </svg> Worklog
+                </a>
+            </li>
+            <li class="nav-group">
+                <a class="nav-link nav-group-toggle" href="#">
+                    <svg class="nav-icon">
+                        <use xlink:href="/coreui/icons/svg/free.svg#cil-bell"></use>
+                    </svg> Report
+                </a>
+                @* <ul class="nav-group-items compact">
+                    <li class="nav-item"><a class="nav-link" href="~/ResourceVsProjectMap"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Resource vs Project</a></li>
+                    <li class="nav-item"><a class="nav-link" href="~/ProjectvsResourceMap"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Project vs Resource</a></li>
+                    <li class="nav-item"><a class="nav-link" href="~/ProjectvsProjectRealisation"><span class="nav-icon"><span class="nav-icon-bullet"></span></span> Project vs Project realisation</a></li>
+                    
+           
+        </ul> *@
+        <div class="sidebar-footer border-top d-none d-md-flex">
+            <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
+        </div>
+    </div>
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <header class="header header-sticky p-0 mb-4">
+            <div class="container-fluid border-bottom px-4">
+                <button class="header-toggler" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()" style="margin-inline-start: -14px;">
+                    <svg class="icon icon-lg">
+                    <use xlink:href="/coreui/icons/svg/free.svg#cil-menu"></use>
+                      
+                    </svg>
+                </button>
+                
+            </div>
+            
+        </header>
+        <div class="body flex-grow-1">
+            <div class="container-lg px-4">
+                <div class="row mb-4">                    
+                    <div class="col-xl-12 col-xxl-12">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer px-4">
+            <div><a href="https://coreui.io">CoreUI </a><a href="https://coreui.io/product/free-bootstrap-admin-template/"> Template</a> © 2024 creativeLabs.</div>
+            <div class="ms-auto">Powered by&nbsp;<a href="https://coreui.io/docs/">CoreUI UI Components</a></div>
+        </footer>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+    <script src="~/Scripts/coreui.bundle.min.js"></script>
+    <script src="~/simplebar/js/simplebar.min.js"></script>
+    <script>
+        const header = document.querySelector('header.header');
+
+        document.addEventListener('scroll', () => {
+            if (header) {
+                header.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+            }
+        });
+    </script>
+    <script>
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <!-- Render the Scripts section here -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="~/Content/style.css" />
+    <link rel="stylesheet" href="~/Content/coreui.min.css" />
+    <link rel="stylesheet" href="~/Content/fontawesome.min.css" />
+   
+</head>
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+    <header class="app-header navbar">
+        
+    </header>
+    <div class="app-body">
+        <div class="sidebar">
+            
+        </div>
+        <main class="main">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+    <footer class="app-footer">
+        
+    </footer>
+    <script src="~/Scripts/jquery.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/coreui.bundle.min.js"></script>
+    
+    @RenderSection("scripts", required: false)
+</body>
+</html> *@
+
+
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - tesvolt.web.app</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/tesvolt.web.app.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">tesvolt.web.app</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - tesvolt.web.app - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+ *@

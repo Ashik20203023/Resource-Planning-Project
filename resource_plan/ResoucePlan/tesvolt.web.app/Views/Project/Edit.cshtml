@@ -1,0 +1,90 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.ProjectModel
+
+@{
+    ViewData["Title"] = "Edit Project";
+}
+
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white ">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>Edit Project Details</strong>
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <!-- Hidden input to store the Id of the project -->
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- Validation summary for the model -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- Project Code Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ProjectCode" class="form-label"></label>
+                        <input asp-for="ProjectCode" class="form-control" />
+                        <span asp-validation-for="ProjectCode" class="text-danger"></span>
+                    </div>
+
+                    <!-- Project Name Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PoNameId" class="control-label"></label>
+                        <select asp-for="PoNameId" class="form-control" asp-items="ViewBag.ProductOwners">
+                            <option value="">Select Product Owner</option>
+                        </select>
+                        <span asp-validation-for="PoNameId" class="text-danger"></span>
+                    </div>
+                    <!-- Asset Name Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="AssetName" class="form-label"></label>
+                        <input asp-for="AssetName" class="form-control" />
+                        <span asp-validation-for="AssetName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Accumulated Hours Field -->
+                   @*  <div class="form-group">
+                        <label asp-for="AccumulatedHrId" class="control-label"></label>
+                        <select asp-for="AccumulatedHrId" class="form-control" asp-items="ViewBag.AccumulatedHrs">
+                            <option value="">Select Accumulated HR</option>
+                        </select>
+                        <span asp-validation-for="AccumulatedHrId" class="text-danger"></span>
+                    </div> *@
+
+
+                    <!-- Project Status (Radio Buttons) -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ProjectStatus" class="form-label">Project Status</label>
+                        <div class="d-flex">
+                            @foreach (var enumValue in Enum.GetValues(typeof(ProjectStatus)).Cast<ProjectStatus>())
+                            {
+                                <div class="form-check me-3">
+                                    <input asp-for="ProjectStatus" type="radio" class="form-check-input"
+                                           value="@enumValue.ToString()" id="status_@enumValue" />
+                                    <label class="form-check-label" for="status_@enumValue">
+                                        @enumValue.ToString().Replace('_', ' ') <!-- Display enum value with space instead of underscores -->
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="ProjectStatus" class="text-danger"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group text-end">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

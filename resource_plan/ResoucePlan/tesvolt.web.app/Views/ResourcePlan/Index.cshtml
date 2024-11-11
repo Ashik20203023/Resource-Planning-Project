@@ -1,0 +1,105 @@
+﻿@model IPagedList<tesvolt.dbmodels.app.ResourcePlanModel>
+
+@using X.PagedList
+@using X.PagedList.Mvc.Core;
+@{
+    ViewData["Title"] = "Index";
+}
+@functions {
+    public string GetMonthName(int monthNumber)
+    {
+        return System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(monthNumber);
+    }
+}
+
+<div class="col-lg-12">
+    <div class="card mb-4">
+        <div class="card-header  bg-secondary text-white">
+            <div class="float-start">
+                <strong>ResourcePlan List</strong>
+            </div>
+            <div class="float-end">
+                <a asp-action="Create" class="btn btn-light btn-sm">Create New</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped ">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().ResourceName) <!-- First() returns an item of ResourcePlanModel -->
+                        </th>
+                        <th>
+                            Month
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().Year)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.First().ProjectName)
+                        </th>
+                       @*  <th>
+                            @Html.DisplayNameFor(model => model.First().Percentage)
+                        </th> *@
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ResourceName.Name) <!-- Assuming ResourceName is a string -->
+                            </td>
+                            <td>
+                                @GetMonthName(item.Month)
+                            </td>
+                            <td> 
+                                @Html.DisplayFor(modelItem => item.Year)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProjectName.Name) <!-- Assuming ProjectName is a string -->
+                            </td>
+                            @* <td>
+                                @Html.DisplayFor(modelItem => item.Percentage)%
+                            </td> *@
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+                                         new PagedListRenderOptions
+                                {
+                                    //DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                                    //DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                                    //DisplayPageCountAndCurrentLocation = true,
+                                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                    LinkToPreviousPageFormat = "Previous",
+                                    LinkToNextPageFormat = "Next",
+                                    LinkToFirstPageFormat = "First",
+                                    LinkToLastPageFormat = "Last",
+                                    //MaximumPageNumbersToDisplay = 5,
+                                    UlElementClasses = new[] { "pagination" },
+                                    LiElementClasses = new[] { "page-item" },
+                                    PageClasses = new[] { "page-link" }
+                                })
+                            </ul>
+                        </nav>
+                    </td>
+                </tr>
+            </tfoot>
+        </div>
+    </div>
+</div>

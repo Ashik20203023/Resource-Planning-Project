@@ -1,0 +1,89 @@
+﻿@using tesvolt.dbmodels.app
+@model tesvolt.dbmodels.app.ResourceModel
+
+@{
+    ViewData["Title"] = "Edit Resource";
+}
+
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>Edit Resource Information</strong>
+                    <a asp-action="Index" class="btn btn-light btn-sm">Back to List</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <!-- Name Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <!-- Category Field (Enum as Radio Buttons) -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Category" class="control-label"></label>
+                        <div class="d-flex">
+                            @foreach (var enumValue in Enum.GetValues(typeof(ResourceCategory)).Cast<ResourceCategory>())
+                            {
+                                <div class="form-check me-3">
+                                    <input asp-for="Category"
+                                           type="radio"
+                                           class="form-check-input"
+                                           value="@enumValue.ToString()"
+                                           id="category_@enumValue"
+                                           name="Category" />
+                                    <label class="form-check-label" for="category_@enumValue">
+                                        @enumValue.ToString().Replace('_', ' ')
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="Category" class="text-danger"></span>
+                    </div>
+
+                    <!-- Role Field (Enum as Radio Buttons) -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Role" class="control-label"></label>
+                        <div class="d-flex">
+                            @foreach (var enumValue in Enum.GetValues(typeof(ResourceRole)).Cast<ResourceRole>())
+                            {
+                                <div class="form-check me-3">
+                                    <input asp-for="Role"
+                                           type="radio"
+                                           class="form-check-input"
+                                           value="@enumValue.ToString()"
+                                           id="role_@enumValue"
+                                           name="Role" />
+                                    <label class="form-check-label" for="role_@enumValue">
+                                        @enumValue.ToString().Replace('_', ' ')
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <!-- Skills Field -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Skills" class="control-label"></label>
+                        <input asp-for="Skills" class="form-control" />
+                        <span asp-validation-for="Skills" class="text-danger"></span>
+                    </div>
+
+                    <!-- Update Button -->
+                    <div class="form-group text-end">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
